@@ -1,0 +1,12 @@
+@font-face {
+  font-family: "Josefin Sans";
+  src: url('../fonts/JosefinSans-Medium.ttf') format("truetype");
+}
+
+.josefin-font {
+  font-family: "Josefin Sans";
+}
+
+/* html {
+  font-family: "Josefin Sans";
+} */
