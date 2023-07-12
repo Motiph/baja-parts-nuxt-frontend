@@ -13,9 +13,17 @@ export const useInventory = () => {
     return useFetch(url, {
       method: 'post',
       baseURL: config.public.baseUrl,
-      body: formData
+      body: formData,
     })
   }
 
-  return { get, saveFile }
+  const saveLineParts = (url, payload) => {
+    return useFetch(url, {
+      method: 'post',
+      baseURL: config.public.baseUrl,
+      body: payload
+    })
+  }
+
+  return { get, saveFile, saveLineParts }
 }

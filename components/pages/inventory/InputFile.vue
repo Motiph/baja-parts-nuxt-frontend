@@ -97,7 +97,7 @@
 import { ref } from 'vue'
 import Papa from 'papaparse';
 import nuxtStorage from 'nuxt-storage';
-const { get, saveFile } = useInventory()
+const { get, saveFile, saveLineParts } = useInventory()
 // const f = useInventory()
 
 const createInventory = ref(false)
@@ -183,26 +183,36 @@ const getData = async () => {
 }
 
 const saveCsv = async () => {
-  var currentDate = new Date();
-  console.log(currentDate);
+  parsingFile.value = true
+  try {
+    let formData = new FormData()
 
-  var currentDateWithFormat = new Date().toJSON().slice(0,10).replace(/-/g,'/');
-  console.log(currentDateWithFormat);
+    formData.append('name', csvFile.value.name)
+    formData.append('upload', csvFile.value)
+    formData.append('count', content.value.length)
+    const response = await saveFile('/csv-files/', formData)
 
-  let newFile = { date: currentDate, values: content.value }
 
-
-  if (nuxtStorage.localStorage.getData('archivos')) {
-    let files = [...nuxtStorage.localStorage.getData('archivos')]
-    files.push(newFile)
-    nuxtStorage.localStorage.setData('archivos', files);
-  } else {
-    let files = [newFile]
-    nuxtStorage.localStorage.setData('archivos', files);
+  } catch (error) {
+    console.log(error)
   }
 
+  try {
+    const payload = {
+      line_parts: content.value
+    }
+    await saveLineParts('/upload-line-parts', payload)
+  } catch (error) {
+    console.log(error)
+  }
+
+  parsingFile.value = false
   snackbar.value = true
 
+  csvFile.value = null
+  content.value = null
+  parsed.value = false
+  parsingFile.value = false
 }
 
 
